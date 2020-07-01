@@ -3,7 +3,7 @@
 # set -x
 set -e
 
-function get_git_remote() {
+get_git_remote() {
   path="$1/.git"
   if [ -d $path ]; then
     origin_info=$(git -C $1 remote -v | awk '{split($0,line," ");print line[1]" "line[2]}' | uniq)
@@ -11,10 +11,10 @@ function get_git_remote() {
   fi
 }
 
-function sync_code() {
+sync_code() {
   CODE_DIR=$1
 
-  code_directories=$(ls -l $CODE_DIR)
+  code_directories=$(ls $CODE_DIR)
 
   OLD_IFS="$IFS"
   IFS="  "
@@ -30,4 +30,11 @@ function sync_code() {
   done
 }
 
-sync_code $1
+main() {
+  case $1 in
+    git) sync_code $2 ;;
+    *) echo "Please input validate command." ;;
+  esac
+}
+
+main $@
